@@ -16,9 +16,7 @@ class NetflixViewModel(application: Application) : BaseViewModel(application) {
 
     suspend fun fetchHomeBanner() = coroutineScope.launch {
         val response = nf.getDataFromGithub()
-        Log.d("xxx","test")
         if (response != null) {
-            Log.d("xxx","success")
             nfLiveData.postValue(response)
         } else {
             apiErrorReponse.postValue("Can not get Data Netflix")

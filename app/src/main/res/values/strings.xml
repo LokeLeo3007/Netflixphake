@@ -20,4 +20,6 @@
     <string name="your_web_client_id">778306080243-qlufn2m71vreeo5tpb7uetr3t9spph9p.apps.googleusercontent.com</string>
     <string name="login_with_google">Login with Google</string>
     <string name="sign_in">Sign in</string>
+    <string name="todo">TODO</string>
+    <string name="c">/</string>
 </resources>

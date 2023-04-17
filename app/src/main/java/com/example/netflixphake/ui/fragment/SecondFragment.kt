@@ -40,7 +40,7 @@ class SecondFragment : BaseFragment<NetflixViewModel, FragmentSecondBinding>() {
                     Log.d(TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
                     updateUI(user)
-                    navigate(R.id.action_SecondFragment_to_HomeFragment,null)
+//                    navigate(R.id.action_SecondFragment_to_HomeFragment,null)
                 } else {
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     updateUI(null)

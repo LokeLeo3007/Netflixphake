@@ -1,48 +1,50 @@
 package com.example.netflixphake.ui.fragment
 
-import android.app.Activity.RESULT_OK
-import android.content.ContentValues.TAG
-import android.content.IntentSender
-import android.util.Log
-import android.view.Gravity
+import android.net.Uri
+import android.view.*
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import com.example.netflixphake.R
 import com.example.netflixphake.databinding.FragmentFirstBinding
+import com.example.netflixphake.entity.NetflixData
 import com.example.netflixphake.ui.base.BaseFragment
 import com.example.netflixphake.ui.model.NetflixViewModel
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.ActionCodeSettings
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 
 class FirstFragment : BaseFragment<NetflixViewModel, FragmentFirstBinding>() {
-
     override fun initActions() {
     }
 
     override fun initData() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+        if(arguments != null){
+            val video = requireArguments().getSerializable("videoinfo",NetflixData::class.java)
+            Toast.makeText(context,video?.thumb.toString(),Toast.LENGTH_SHORT).show()
+            binding.tvDescription.text = video?.description
 
-//        googleSignInClient = activity?.let { GoogleSignIn.getClient(it.applicationContext , gso) }!!
+            val playerView = binding.player
+            val progressBar = binding.progressBar
 
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            navigate(R.id.action_FirstFragment_to_NetflixFragment, null)
+            val simpleExoPlayer = ExoPlayer.Builder(baseContext)
+                .setSeekBackIncrementMs(5000)
+                .setSeekForwardIncrementMs(5000)
+                .build()
+            playerView.player = simpleExoPlayer
+            playerView.keepScreenOn = true
+            simpleExoPlayer.addListener(object: Player.Listener{
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                    if(playbackState == Player.STATE_BUFFERING){
+                        progressBar.visibility = View.VISIBLE
+                    } else if (playbackState == Player.STATE_READY){
+                        progressBar.visibility = View.GONE
+                    }
+                }
+            })
+
+            val videoSource = Uri.parse(video?.sources)
+            simpleExoPlayer.setMediaItem(MediaItem.fromUri(videoSource))
+            simpleExoPlayer.prepare()
+            simpleExoPlayer.play()
         }
     }
 

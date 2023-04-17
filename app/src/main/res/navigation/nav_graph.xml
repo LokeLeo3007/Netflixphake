@@ -12,13 +12,6 @@
         tools:layout="@layout/fragment_home">
 
         <action
-            android:id="@+id/action_HomeFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-        <action
-            android:id="@+id/action_HomeFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-
-        <action
             android:id="@+id/action_HomeFragment_to_NetflixFragment"
             app:destination="@id/NetflixFragment" />
     </fragment>
@@ -28,10 +21,6 @@
         android:name="com.example.netflixphake.ui.fragment.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
-        <action
-            android:id="@+id/action_FirstFragment_to_NetflixFragment"
-            app:destination="@+id/NetflixFragment"
-        />
     </fragment>
 
     <fragment
@@ -39,10 +28,6 @@
         android:name="com.example.netflixphake.ui.fragment.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_HomeFragment"
-            app:destination="@id/HomeFragment" />
     </fragment>
 
     <fragment
@@ -54,6 +39,9 @@
             android:id="@+id/NetflixFragment_to_HomeFragment"
             app:destination="@+id/HomeFragment"
             />
+        <action
+            android:id="@+id/NetflixFragment_to_FirstFragment"
+            app:destination="@+id/FirstFragment"/>
 
     </fragment>
 </navigation>

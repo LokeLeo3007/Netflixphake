@@ -35,6 +35,7 @@ abstract class BaseFragment<T : BaseViewModel, Y : ViewDataBinding> : Fragment()
     private var navController: NavController? = null
 
     lateinit var baseContext: Context
+    private var view: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,7 @@ abstract class BaseFragment<T : BaseViewModel, Y : ViewDataBinding> : Fragment()
             navController = NavHostFragment.findNavController(this)
         } catch (_: Exception) {
         }
+        val view = inflater.inflate(provideLayoutId(), container, false)
         initView()
         return binding.root
     }

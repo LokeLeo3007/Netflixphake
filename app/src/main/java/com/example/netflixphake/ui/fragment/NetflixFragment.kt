@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,9 @@ import com.example.netflixphake.entity.NetflixData
 import com.example.netflixphake.ui.adapter.ImageAdapter
 import com.example.netflixphake.ui.base.BaseFragment
 import com.example.netflixphake.ui.model.NetflixViewModel
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -60,15 +64,42 @@ class NetflixFragment : BaseFragment<NetflixViewModel, FragmentNetflixBinding>()
             result ->
             if (result != null) {
                 images.addAll(result)
-                binding.videotest.setMediaController(android.widget.MediaController(context))
-                binding.videotest.setVideoURI(Uri.parse(images[1].sources))
-                binding.videotest.requestFocus()
-                binding.videotest
-                binding.videotest.start()
+                val playerView = binding.videotest
+                val progressBar = binding.progressBar
+
+                val simpleExoPlayer = ExoPlayer.Builder(baseContext)
+                    .setSeekBackIncrementMs(5000)
+                    .setSeekForwardIncrementMs(5000)
+                    .build()
+
+                playerView.player = simpleExoPlayer
+                playerView.keepScreenOn = true
+
+                playerView.useController = false
+
+                (playerView.player as ExoPlayer).addListener(object: Player.Listener{
+                    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                        if(playbackState == Player.STATE_BUFFERING){
+                            progressBar.visibility = View.VISIBLE
+                        } else if (playbackState == Player.STATE_READY){
+                            progressBar.visibility = View.GONE
+                        }
+                    }
+                })
+                val videoSource = Uri.parse(result[0]?.sources)
+                simpleExoPlayer.setMediaItem(MediaItem.fromUri(videoSource))
+                simpleExoPlayer.prepare()
+                simpleExoPlayer.play()
                 adapter.notifyDataSetChanged()
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.clearDisposable()
+        binding.videotest.player?.release()
     }
 
     override fun initView() {

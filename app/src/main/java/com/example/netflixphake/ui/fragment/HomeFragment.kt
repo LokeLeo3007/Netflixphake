@@ -29,8 +29,8 @@ class HomeFragment : BaseFragment<NetflixViewModel, FragmentHomeBinding>() {
 
     override fun initActions() {
         binding.btnLogin.setOnClickListener{
-//            createSignInIntent()
-            navigate(R.id.action_HomeFragment_to_NetflixFragment,null)
+            createSignInIntent()
+//            navigate(R.id.action_HomeFragment_to_NetflixFragment,null)
         }
 
     }
@@ -55,6 +55,9 @@ class HomeFragment : BaseFragment<NetflixViewModel, FragmentHomeBinding>() {
 
     override fun initView() {
         auth = FirebaseAuth.getInstance()
+        if(FirebaseAuth.getInstance().currentUser != null){
+            navigate(R.id.action_HomeFragment_to_NetflixFragment,null)
+        }
     }
 
     override fun provideLayoutId() = R.layout.fragment_home
